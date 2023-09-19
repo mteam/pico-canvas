@@ -4,6 +4,7 @@
 #include <array>
 #include <cstddef>
 #include "picocanvas/geometry.hpp"
+#include "picocanvas/bitmap.hpp"
 
 namespace picocanvas {
     class Canvas {
@@ -18,7 +19,7 @@ namespace picocanvas {
 
         void fill_rect(const Rect &rect, uint16_t color);
 
-        void draw_bitmap(const Point &position, uint16_t width, uint16_t height, const uint16_t bitmap[]);
+        void draw_bitmap(const Point &position, const Bitmap &bitmap);
 
     protected:
         uint16_t *frame_buffer;
