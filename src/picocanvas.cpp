@@ -13,10 +13,17 @@ namespace picocanvas {
         }
     }
 
-    void Canvas::draw_bitmap(const Point &pos, const Bitmap &bitmap) {
-        for (int y = 0; y < bitmap.height; y++) {
-            for (int x = 0; x < bitmap.width; x++) {
-                frame_buffer[(pos.y + y) * bounds.w + (pos.x + x)] = bitmap.data[y * bitmap.width + x];
+    void Canvas::draw_bitmap(const Bitmap &bitmap, const Point &dest) {
+        draw_bitmap(bitmap, dest, bitmap.rect());
+    }
+
+    void Canvas::draw_bitmap(const Bitmap &bitmap, const Point &dest, const Rect &src) {
+        auto drawn = bitmap.rect().intersection(src);
+
+        for (int y = 0; y < drawn.h; y++) {
+            for (int x = 0; x < drawn.w; x++) {
+                frame_buffer[(dest.y + y) * bounds.w + (dest.x + x)] = bitmap.data[(drawn.y + y) * bitmap.width +
+                                                                                   (drawn.x + x)];
             }
         }
     }
