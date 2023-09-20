@@ -9,6 +9,8 @@
 namespace picocanvas {
     class Canvas {
     public:
+        uint16_t bitmap_transparency = 0x0000;
+
         Canvas(uint16_t width, uint16_t height);
 
         uint16_t *get_frame_buffer() { return frame_buffer; }

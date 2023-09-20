@@ -22,8 +22,10 @@ namespace picocanvas {
 
         for (int y = 0; y < drawn.h; y++) {
             for (int x = 0; x < drawn.w; x++) {
-                frame_buffer[(dest.y + y) * bounds.w + (dest.x + x)] = bitmap.data[(drawn.y + y) * bitmap.width +
-                                                                                   (drawn.x + x)];
+                uint16_t col = bitmap.data[(drawn.y + y) * bitmap.width + (drawn.x + x)];
+                if (col == bitmap_transparency) continue;
+
+                frame_buffer[(dest.y + y) * bounds.w + (dest.x + x)] = col;
             }
         }
     }
