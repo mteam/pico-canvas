@@ -29,4 +29,11 @@ namespace picocanvas {
             }
         }
     }
+
+    void Canvas::stroke_rect(const Rect &rect, uint16_t color) {
+        horizontal_line({rect.x, rect.y}, rect.w, color);
+        horizontal_line({rect.x, rect.y + rect.h - 1}, rect.w, color);
+        vertical_line({rect.x, rect.y}, rect.h, color);
+        vertical_line({rect.x + rect.w - 1, rect.y}, rect.h, color);
+    }
 }

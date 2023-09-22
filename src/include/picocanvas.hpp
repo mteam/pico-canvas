@@ -21,6 +21,16 @@ namespace picocanvas {
 
         void fill_rect(const Rect &rect, uint16_t color);
 
+        void horizontal_line(const Point &p, int w, uint16_t color) {
+            fill_rect({p.x, p.y, w, 1}, color);
+        }
+
+        void vertical_line(const Point &p, int h, uint16_t color) {
+            fill_rect({p.x, p.y, 1, h}, color);
+        }
+
+        void stroke_rect(const Rect &rect, uint16_t color);
+
         void draw_bitmap(const Bitmap &bitmap, const Point &dest);
         void draw_bitmap(const Bitmap &bitmap, const Point &dest, const Rect &src);
 
