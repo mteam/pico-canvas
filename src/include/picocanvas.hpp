@@ -7,9 +7,13 @@
 #include "picocanvas/bitmap.hpp"
 
 namespace picocanvas {
+    struct CanvasState {
+        uint16_t bitmap_transparency = 0x0000;
+    };
+
     class Canvas {
     public:
-        uint16_t bitmap_transparency = 0x0000;
+        CanvasState state;
 
         Canvas(uint16_t width, uint16_t height);
 
