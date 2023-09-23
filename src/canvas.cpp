@@ -12,9 +12,11 @@ namespace picocanvas {
     }
 
     void Canvas::fill_rect(const Rect &rect, uint16_t color) {
-        for (int y = rect.y; y < (rect.y + rect.h); y++) {
-            for (int x = rect.x; x < (rect.x + rect.w); x++) {
-                set_pixel({x, y}, color);
+        Rect drawn = rect.intersection(state.clip);
+
+        for (int y = drawn.y; y < (drawn.y + drawn.h); y++) {
+            for (int x = drawn.x; x < (drawn.x + drawn.w); x++) {
+                set_pixel_raw({x, y}, color);
             }
         }
     }
@@ -30,15 +32,15 @@ namespace picocanvas {
 
     template<class T>
     void Canvas::draw_bitmap(const T &bitmap, const Point &dest, const Rect &src) {
-        picocanvas::Rect rect = bitmap.rect();
-        auto drawn = rect.intersection(src);
+        Rect bitmap_bounds = bitmap.rect();
+        Rect drawn = src.intersection(bitmap_bounds);
 
         for (int y = 0; y < drawn.h; y++) {
             for (int x = 0; x < drawn.w; x++) {
                 uint16_t col = bitmap.sample_color(drawn.x + x, drawn.y + y);
                 if (col == state.bitmap_transparency) continue;
 
-                set_pixel({dest.x + x, dest.y + y}, col);
+                set_pixel_clip({dest.x + x, dest.y + y}, col);
             }
         }
     }

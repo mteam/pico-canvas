@@ -19,8 +19,11 @@ namespace picocanvas {
 
         uint16_t *get_frame_buffer() { return frame_buffer; }
 
-        void set_pixel(const Point &p, uint16_t color) {
-            if (!state.clip.contains(p)) return;
+        void set_pixel_clip(const Point &p, uint16_t color) {
+            if (state.clip.contains(p)) set_pixel_raw(p, color);
+        }
+
+        void set_pixel_raw(const Point &p, uint16_t color) {
             frame_buffer[p.y * bounds.w + p.x] = color & state.color_mask;
         }
 
