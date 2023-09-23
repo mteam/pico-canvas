@@ -8,6 +8,7 @@ add_library(picocanvas INTERFACE)
 target_sources(picocanvas INTERFACE
         ${CMAKE_CURRENT_LIST_DIR}/src/canvas.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/geometry.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/text.cpp
 )
 
 target_include_directories(picocanvas INTERFACE
