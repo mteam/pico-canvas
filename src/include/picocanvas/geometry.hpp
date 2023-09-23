@@ -63,13 +63,21 @@ namespace picocanvas {
 
         Rect(const Point &tl, const Point &br) : x(tl.x), y(tl.y), w(br.x - tl.x), h(br.y - tl.y) {}
 
-        bool empty() const;
+        bool empty() const {
+            return w <= 0 || h <= 0;
+        }
 
-        bool contains(const Point &p) const;
+        bool contains(const Point &p) const {
+            return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h;
+        }
 
-        bool contains(const Rect &p) const;
+        bool contains(const Rect &p) const {
+            return p.x >= x && p.y >= y && p.x + p.w < x + w && p.y + p.h < y + h;
+        }
 
-        bool intersects(const Rect &r) const;
+        bool intersects(const Rect &r) const {
+            return !(x > r.x + r.w || x + w < r.x || y > r.y + r.h || y + h < r.y);
+        }
 
         Rect intersection(const Rect &r) const;
 

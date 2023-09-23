@@ -9,22 +9,6 @@ namespace picocanvas {
         };
     }
 
-    bool Rect::empty() const {
-        return w <= 0 || h <= 0;
-    }
-
-    bool Rect::contains(const Point &p) const {
-        return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h;
-    }
-
-    bool Rect::contains(const Rect &p) const {
-        return p.x >= x && p.y >= y && p.x + p.w < x + w && p.y + p.h < y + h;
-    }
-
-    bool Rect::intersects(const Rect &r) const {
-        return !(x > r.x + r.w || x + w < r.x || y > r.y + r.h || y + h < r.y);
-    }
-
     Rect Rect::intersection(const Rect &r) const {
         return {std::max(x, r.x),
                 std::max(y, r.y),

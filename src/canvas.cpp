@@ -52,10 +52,4 @@ namespace picocanvas {
         vertical_line({rect.x, rect.y}, rect.h, color);
         vertical_line({rect.x + rect.w - 1, rect.y}, rect.h, color);
     }
-
-    inline void Canvas::set_pixel(const Point &p, uint16_t color) {
-        if (state.clip.contains(p)) {
-            frame_buffer[p.y * bounds.w + p.x] = color & state.color_mask;
-        }
-    }
 }
