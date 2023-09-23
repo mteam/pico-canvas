@@ -6,8 +6,9 @@
 
 namespace picocanvas {
     struct CanvasState {
-        uint16_t bitmap_transparency = 0x0000;
-        uint16_t color_mask = 0xffff;
+        uint16_t bitmap_transparency{};
+        uint16_t color_mask{};
+        Rect clip;
     };
 
     class Canvas {
@@ -17,6 +18,8 @@ namespace picocanvas {
         Canvas(uint16_t width, uint16_t height);
 
         uint16_t *get_frame_buffer() { return frame_buffer; }
+
+        inline void set_pixel(const Point &p, uint16_t color);
 
         void fill(uint16_t color) {
             fill_rect(bounds, color);

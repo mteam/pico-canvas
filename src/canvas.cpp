@@ -3,12 +3,18 @@
 namespace picocanvas {
     Canvas::Canvas(uint16_t width, uint16_t height) : bounds(0, 0, width, height) {
         frame_buffer = new uint16_t[width * height];
+
+        state = {
+            .bitmap_transparency = 0x0000,
+            .color_mask = 0xffff,
+            .clip = bounds
+        };
     }
 
     void Canvas::fill_rect(const Rect &rect, uint16_t color) {
         for (int y = rect.y; y < (rect.y + rect.h); y++) {
             for (int x = rect.x; x < (rect.x + rect.w); x++) {
-                frame_buffer[y * bounds.w + x] = color & state.color_mask;
+                set_pixel({x, y}, color);
             }
         }
     }
@@ -32,7 +38,7 @@ namespace picocanvas {
                 uint16_t col = bitmap.sample_color(drawn.x + x, drawn.y + y);
                 if (col == state.bitmap_transparency) continue;
 
-                frame_buffer[(dest.y + y) * bounds.w + (dest.x + x)] = col & state.color_mask;
+                set_pixel({dest.x + x, dest.y + y}, col);
             }
         }
     }
@@ -45,5 +51,11 @@ namespace picocanvas {
         horizontal_line({rect.x, rect.y + rect.h - 1}, rect.w, color);
         vertical_line({rect.x, rect.y}, rect.h, color);
         vertical_line({rect.x + rect.w - 1, rect.y}, rect.h, color);
+    }
+
+    inline void Canvas::set_pixel(const Point &p, uint16_t color) {
+        if (state.clip.contains(p)) {
+            frame_buffer[p.y * bounds.w + p.x] = color & state.color_mask;
+        }
     }
 }
