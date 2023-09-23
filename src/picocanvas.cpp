@@ -8,7 +8,7 @@ namespace picocanvas {
     void Canvas::fill_rect(const Rect &rect, uint16_t color) {
         for (int y = rect.y; y < (rect.y + rect.h); y++) {
             for (int x = rect.x; x < (rect.x + rect.w); x++) {
-                frame_buffer[y * bounds.w + x] = color;
+                frame_buffer[y * bounds.w + x] = color & state.color_mask;
             }
         }
     }
@@ -25,7 +25,7 @@ namespace picocanvas {
                 uint16_t col = bitmap.data[(drawn.y + y) * bitmap.width + (drawn.x + x)];
                 if (col == state.bitmap_transparency) continue;
 
-                frame_buffer[(dest.y + y) * bounds.w + (dest.x + x)] = col;
+                frame_buffer[(dest.y + y) * bounds.w + (dest.x + x)] = col & state.color_mask;
             }
         }
     }
