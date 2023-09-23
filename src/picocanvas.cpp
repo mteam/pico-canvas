@@ -13,22 +13,30 @@ namespace picocanvas {
         }
     }
 
-    void Canvas::draw_bitmap(const Bitmap &bitmap, const Point &dest) {
-        draw_bitmap(bitmap, dest, bitmap.rect());
+    template<class T>
+    void Canvas::draw_bitmap(const T &bitmap, const Point &dest) {
+        Rect src = bitmap.rect();
+        draw_bitmap(bitmap, dest, src);
     }
 
-    void Canvas::draw_bitmap(const Bitmap &bitmap, const Point &dest, const Rect &src) {
-        auto drawn = bitmap.rect().intersection(src);
+    template void Canvas::draw_bitmap(const Bitmap &, const picocanvas::Point &);
+
+    template<class T>
+    void Canvas::draw_bitmap(const T &bitmap, const Point &dest, const Rect &src) {
+        picocanvas::Rect rect = bitmap.rect();
+        auto drawn = rect.intersection(src);
 
         for (int y = 0; y < drawn.h; y++) {
             for (int x = 0; x < drawn.w; x++) {
-                uint16_t col = bitmap.data[(drawn.y + y) * bitmap.width + (drawn.x + x)];
+                uint16_t col = bitmap.sample_color(drawn.x + x, drawn.y + y);
                 if (col == state.bitmap_transparency) continue;
 
                 frame_buffer[(dest.y + y) * bounds.w + (dest.x + x)] = col & state.color_mask;
             }
         }
     }
+
+    template void Canvas::draw_bitmap(const Bitmap &, const picocanvas::Point &, const picocanvas::Rect &);
 
     void Canvas::stroke_rect(const Rect &rect, uint16_t color) {
         horizontal_line({rect.x, rect.y}, rect.w, color);

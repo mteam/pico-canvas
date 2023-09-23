@@ -1,5 +1,6 @@
 #pragma once
 
+#include "geometry.hpp"
 #include <cstdint>
 
 namespace picocanvas {
@@ -12,6 +13,10 @@ namespace picocanvas {
 
         Rect rect() const {
             return Rect{0, 0, width, height};
+        }
+
+        uint16_t sample_color(uint16_t x, uint16_t y) const {
+            return data[y * width + x];
         }
     };
 }
