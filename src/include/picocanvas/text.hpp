@@ -9,7 +9,7 @@
 namespace picocanvas {
     class FixedWidthFont {
     public:
-        FixedWidthFont(const Bitmap1 &font_bitmap,
+        FixedWidthFont(Bitmap1 font_bitmap,
                        int16_t character_width,
                        int16_t character_height) : font_bitmap(font_bitmap),
                                                    character_width(character_width),
@@ -22,7 +22,7 @@ namespace picocanvas {
     private:
         const int16_t character_height;
         const int16_t character_width;
-        const Bitmap1 &font_bitmap;
+        const Bitmap1 font_bitmap;
 
         void write_character(Canvas &canvas, char character, const Point &position) const;
     };
