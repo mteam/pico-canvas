@@ -44,10 +44,10 @@ namespace picocanvas {
         void stroke_rect(const Rect &rect, uint16_t color);
 
         template<class T>
-        void draw_bitmap(const T &bitmap, const Point &dest);
+        void draw_bitmap(const T &bitmap, const Point &dest, int scale = 1);
 
         template<class T>
-        void draw_bitmap(const T &bitmap, const Point &dest, const Rect &src);
+        void draw_bitmap(const T &bitmap, const Point &dest, const Rect &src, int scale = 1);
 
     protected:
         uint16_t *frame_buffer;

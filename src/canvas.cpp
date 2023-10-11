@@ -22,17 +22,17 @@ namespace picocanvas {
     }
 
     template<class T>
-    void Canvas::draw_bitmap(const T &bitmap, const Point &dest) {
+    void Canvas::draw_bitmap(const T &bitmap, const Point &dest, int scale) {
         Rect src = bitmap.rect();
-        draw_bitmap(bitmap, dest, src);
+        draw_bitmap(bitmap, dest, src, scale);
     }
 
-    template void Canvas::draw_bitmap(const Bitmap16 &, const picocanvas::Point &);
-    template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &);
-    template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &);
+    template void Canvas::draw_bitmap(const Bitmap16 &, const picocanvas::Point &, int);
+    template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, int);
+    template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, int);
 
     template<class T>
-    void Canvas::draw_bitmap(const T &bitmap, const Point &dest, const Rect &src) {
+    void Canvas::draw_bitmap(const T &bitmap, const Point &dest, const Rect &src, int scale) {
         Rect bitmap_bounds = bitmap.rect();
         Rect drawn = src.intersection(bitmap_bounds);
 
@@ -41,14 +41,18 @@ namespace picocanvas {
                 uint16_t col = bitmap.sample_color(drawn.x + x, drawn.y + y);
                 if (col == state.bitmap_transparency) continue;
 
-                set_pixel_clip({dest.x + x, dest.y + y}, col);
+                for (int sy = 0; sy < scale; sy++) {
+                    for (int sx = 0; sx < scale; sx++) {
+                        set_pixel_clip({dest.x + x * scale + sx, dest.y + y * scale + sy}, col);
+                    }
+                }
             }
         }
     }
 
-    template void Canvas::draw_bitmap(const Bitmap16 &, const picocanvas::Point &, const picocanvas::Rect &);
-    template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, const picocanvas::Rect &);
-    template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, const picocanvas::Rect &);
+    template void Canvas::draw_bitmap(const Bitmap16 &, const picocanvas::Point &, const picocanvas::Rect &, int);
+    template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, const picocanvas::Rect &, int);
+    template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, const picocanvas::Rect &, int);
 
     void Canvas::stroke_rect(const Rect &rect, uint16_t color) {
         horizontal_line({rect.x, rect.y}, rect.w, color);
