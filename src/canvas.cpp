@@ -29,6 +29,7 @@ namespace picocanvas {
 
     template void Canvas::draw_bitmap(const Bitmap16 &, const picocanvas::Point &);
     template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &);
+    template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &);
 
     template<class T>
     void Canvas::draw_bitmap(const T &bitmap, const Point &dest, const Rect &src) {
@@ -47,6 +48,7 @@ namespace picocanvas {
 
     template void Canvas::draw_bitmap(const Bitmap16 &, const picocanvas::Point &, const picocanvas::Rect &);
     template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, const picocanvas::Rect &);
+    template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, const picocanvas::Rect &);
 
     void Canvas::stroke_rect(const Rect &rect, uint16_t color) {
         horizontal_line({rect.x, rect.y}, rect.w, color);
