@@ -4,6 +4,7 @@
 #include "colors.hpp"
 #include <cstdint>
 #include <cstddef>
+#include <vector>
 
 namespace picocanvas {
     struct Bitmap1 {
@@ -76,6 +77,17 @@ namespace picocanvas {
 
         Rect rect() const {
             return Rect{0, 0, static_cast<int32_t>(dib_header->width), static_cast<int32_t>(dib_header->height)};
+        }
+
+        std::vector<BMPColor> palette_vector() const {
+            std::vector<BMPColor> palette_vector;
+            palette_vector.reserve(dib_header->colors_used);
+
+            for (int i = 0; i < dib_header->colors_used; i++) {
+                palette_vector.push_back(palette[i]);
+            }
+
+            return palette_vector;
         }
 
         uint8_t sample_color(uint16_t x, uint16_t y) const {
