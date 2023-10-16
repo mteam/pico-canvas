@@ -42,16 +42,22 @@ namespace picocanvas {
         Rect src_clip = src.intersection(bitmap_bounds);
         clip_bitmap(dest_clip, src_clip, scale);
 
-        for (int y = 0; y < src_clip.h; y++) {
-            for (int x = 0; x < src_clip.w; x++) {
-                uint8_t col = bitmap.sample_color(src_clip.x + x, src_clip.y + y);
-                if (col == state.bitmap_transparency) continue;
+        int index = dest_clip.y * bounds.w + dest_clip.x; // index of the first pixel to draw
+        int step = bounds.w - src_clip.w * scale; // number of pixels to skip to get to the next row
 
-                for (int sy = 0; sy < scale; sy++) {
+        for (int y = 0; y < src_clip.h; y++) {
+            for (int sy = 0; sy < scale; sy++) {
+                for (int x = 0; x < src_clip.w; x++) {
+                    uint8_t col = bitmap.sample_color(src_clip.x + x, src_clip.y + y);
+
                     for (int sx = 0; sx < scale; sx++) {
-                        set_pixel_raw({dest_clip.x + x * scale + sx, dest_clip.y + y * scale + sy}, col);
+                        if (col != state.bitmap_transparency) {
+                            set_pixel_raw(index, col);
+                        }
+                        index++;
                     }
                 }
+                index += step;
             }
         }
     }
