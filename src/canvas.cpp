@@ -14,10 +14,14 @@ namespace picocanvas {
     void Canvas::fill_rect(const Rect &rect, uint8_t color) {
         Rect drawn = rect.intersection(state.clip);
 
-        for (int y = drawn.y; y < (drawn.y + drawn.h); y++) {
-            for (int x = drawn.x; x < (drawn.x + drawn.w); x++) {
-                set_pixel_raw({x, y}, color);
+        int index = drawn.y * bounds.w + drawn.x; // index of the first pixel to draw
+        int step = bounds.w - drawn.w; // number of pixels to skip to get to the next row
+
+        for (int h = 0; h < drawn.h; h++) {
+            for (int w = 0; w < drawn.w; w++) {
+                set_pixel_raw(index++, color);
             }
+            index += step;
         }
     }
 

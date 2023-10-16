@@ -27,6 +27,10 @@ namespace picocanvas {
             frame_buffer[p.y * bounds.w + p.x] = color & state.color_mask;
         }
 
+        void set_pixel_raw(int index, uint8_t color) {
+            frame_buffer[index] = color & state.color_mask;
+        }
+
         void fill(uint8_t color) {
             fill_rect(bounds, color);
         }
