@@ -37,16 +37,19 @@ namespace picocanvas {
     template<class T>
     void Canvas::draw_bitmap(const T &bitmap, const Point &dest, const Rect &src, int scale) {
         Rect bitmap_bounds = bitmap.rect();
-        Rect drawn = src.intersection(bitmap_bounds);
 
-        for (int y = 0; y < drawn.h; y++) {
-            for (int x = 0; x < drawn.w; x++) {
-                uint8_t col = bitmap.sample_color(drawn.x + x, drawn.y + y);
+        Point dest_clip = dest;
+        Rect src_clip = src.intersection(bitmap_bounds);
+        clip_bitmap(dest_clip, src_clip, scale);
+
+        for (int y = 0; y < src_clip.h; y++) {
+            for (int x = 0; x < src_clip.w; x++) {
+                uint8_t col = bitmap.sample_color(src_clip.x + x, src_clip.y + y);
                 if (col == state.bitmap_transparency) continue;
 
                 for (int sy = 0; sy < scale; sy++) {
                     for (int sx = 0; sx < scale; sx++) {
-                        set_pixel_clip({dest.x + x * scale + sx, dest.y + y * scale + sy}, col);
+                        set_pixel_raw({dest_clip.x + x * scale + sx, dest_clip.y + y * scale + sy}, col);
                     }
                 }
             }
@@ -55,6 +58,28 @@ namespace picocanvas {
 
     template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, const picocanvas::Rect &, int);
     template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, const picocanvas::Rect &, int);
+
+    void Canvas::clip_bitmap(Point &dest, Rect &src, int scale) {
+        if (dest.x < 0) {
+            src.x -= dest.x / scale;
+            src.w += dest.x / scale;
+            dest.x = 0;
+        }
+
+        if (dest.y < 0) {
+            src.y -= dest.y / scale;
+            src.h += dest.y / scale;
+            dest.y = 0;
+        }
+
+        if (dest.x + src.w * scale > bounds.w) {
+            src.w = (bounds.w - dest.x) / scale;
+        }
+
+        if (dest.y + src.h * scale > bounds.h) {
+            src.h = (bounds.h - dest.y) / scale;
+        }
+    }
 
     void Canvas::stroke_rect(const Rect &rect, uint8_t color) {
         horizontal_line({rect.x, rect.y}, rect.w, color);

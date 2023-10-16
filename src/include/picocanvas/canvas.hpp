@@ -53,6 +53,8 @@ namespace picocanvas {
         template<class T>
         void draw_bitmap(const T &bitmap, const Point &dest, const Rect &src, int scale = 1);
 
+        void clip_bitmap(Point &dest, Rect &src, int scale);
+
     protected:
         uint8_t *frame_buffer;
         Rect bounds;
