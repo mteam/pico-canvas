@@ -14,10 +14,9 @@ namespace picocanvas {
     class Canvas {
     public:
         CanvasState state;
+        uint8_t *frame_buffer;
 
-        Canvas(uint16_t width, uint16_t height);
-
-        uint8_t *get_frame_buffer() { return frame_buffer; }
+        Canvas(uint8_t *frame_buffer, uint16_t width, uint16_t height);
 
         void set_pixel_clip(const Point &p, uint8_t color) {
             if (state.clip.contains(p)) set_pixel_raw(p, color);
@@ -54,7 +53,6 @@ namespace picocanvas {
         void draw_bitmap(T &bitmap, const Point &dest, const Rect &src, int scale = 1);
 
     protected:
-        uint8_t *frame_buffer;
         Rect bounds;
 
         void clip_bitmap(Point &dest, Rect &src, int scale);

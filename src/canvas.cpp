@@ -1,13 +1,12 @@
 #include "picocanvas.hpp"
 
 namespace picocanvas {
-    Canvas::Canvas(uint16_t width, uint16_t height) : bounds(0, 0, width, height) {
-        frame_buffer = new uint8_t[width * height];
-
+    Canvas::Canvas(uint8_t *frame_buffer, uint16_t width, uint16_t height) : frame_buffer(frame_buffer),
+                                                                             bounds(0, 0, width, height) {
         state = {
-            .bitmap_transparency = 0x00,
-            .color_mask = 0xff,
-            .clip = bounds
+                .bitmap_transparency = 0x00,
+                .color_mask = 0xff,
+                .clip = bounds
         };
     }
 
@@ -32,6 +31,7 @@ namespace picocanvas {
     }
 
     template void Canvas::draw_bitmap(Bitmap1 &, const picocanvas::Point &, int);
+
     template void Canvas::draw_bitmap(BitmapBMP &, const picocanvas::Point &, int);
 
     template<class T>
@@ -71,6 +71,7 @@ namespace picocanvas {
     }
 
     template void Canvas::draw_bitmap(Bitmap1 &, const picocanvas::Point &, const picocanvas::Rect &, int);
+
     template void Canvas::draw_bitmap(BitmapBMP &, const picocanvas::Point &, const picocanvas::Rect &, int);
 
     void Canvas::clip_bitmap(Point &dest, Rect &src, int scale) {
