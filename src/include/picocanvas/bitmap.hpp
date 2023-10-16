@@ -34,6 +34,9 @@ namespace picocanvas {
         uint32_t file_size;
         uint32_t reserved;
         uint32_t data_offset;
+    };
+
+    struct DIBHeader {
         uint32_t header_size;
         uint32_t width;
         uint32_t height;
@@ -50,44 +53,48 @@ namespace picocanvas {
 
     struct BitmapBMP {
         const uint8_t *data;
+        const BMPHeader *bmp_header;
+        const DIBHeader *dib_header;
+        const uint32_t *palette;
+        const void *pixels;
         const std::size_t length;
 
-        BitmapBMP(const uint8_t *data, std::size_t length) : data(data), length(length) {}
+        BitmapBMP(const uint8_t *data, std::size_t length) :
+                data(data),
+                bmp_header(reinterpret_cast<const BMPHeader *>(data)),
+                dib_header(reinterpret_cast<const DIBHeader *>(data + sizeof(BMPHeader))),
+                palette(reinterpret_cast<const uint32_t *>(&dib_header + dib_header->header_size)),
+                pixels(data + bmp_header->data_offset),
+                length(length) {}
 
         Rect rect() const {
-            auto *header = (BMPHeader *) data;
-
-            return Rect{0, 0, static_cast<int32_t>(header->width), static_cast<int32_t>(header->height)};
+            return Rect{0, 0, static_cast<int32_t>(dib_header->width), static_cast<int32_t>(dib_header->height)};
         }
 
         uint16_t sample_color(uint16_t x, uint16_t y) const {
-            auto *header = reinterpret_cast<const BMPHeader *>(data);
-            auto *dib = reinterpret_cast<const uint8_t *>(&header->header_size);
-
             // BMPs are stored upside down
-            y = header->height - y - 1;
+            y = dib_header->height - y - 1;
 
-            if (header->bits_per_pixel == 8) {
-                auto *palette = dib + header->header_size;
-                auto *pixels = data + header->data_offset;
+            if (dib_header->bits_per_pixel == 8) {
+                auto *pixels8 = reinterpret_cast<const uint8_t *>(pixels);
+                auto *palette8 = reinterpret_cast<const uint8_t *>(palette);
 
-                uint8_t index = pixels[y * header->width + x];
+                uint8_t index = pixels8[y * dib_header->width + x];
 
-                uint8_t r = palette[index * 4 + 2];
-                uint8_t g = palette[index * 4 + 1];
-                uint8_t b = palette[index * 4 + 0];
+                uint8_t r = palette8[index * 4 + 2];
+                uint8_t g = palette8[index * 4 + 1];
+                uint8_t b = palette8[index * 4 + 0];
 
                 return rgb565(r, g, b);
-            } else if (header->bits_per_pixel == 16) {
-                auto *pixels = reinterpret_cast<const uint16_t *>(data + header->data_offset);
+            } else if (dib_header->bits_per_pixel == 16) {
+                auto *pixels16 = reinterpret_cast<const uint16_t *>(pixels);
+                return pixels16[y * dib_header->width + x];
+            } else if (dib_header->bits_per_pixel == 24) {
+                auto *pixels8 = reinterpret_cast<const uint8_t *>(pixels);
 
-                return pixels[y * header->width + x];
-            } else if (header->bits_per_pixel == 24) {
-                auto *pixels = data + header->data_offset;
-
-                uint8_t r = pixels[(y * header->width + x) * 3 + 2];
-                uint8_t g = pixels[(y * header->width + x) * 3 + 1];
-                uint8_t b = pixels[(y * header->width + x) * 3 + 0];
+                uint8_t r = pixels8[(y * dib_header->width + x) * 3 + 2];
+                uint8_t g = pixels8[(y * dib_header->width + x) * 3 + 1];
+                uint8_t b = pixels8[(y * dib_header->width + x) * 3 + 0];
 
                 return rgb565(r, g, b);
             } else {
