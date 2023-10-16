@@ -27,7 +27,6 @@ namespace picocanvas {
         draw_bitmap(bitmap, dest, src, scale);
     }
 
-    template void Canvas::draw_bitmap(const Bitmap16 &, const picocanvas::Point &, int);
     template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, int);
     template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, int);
 
@@ -50,7 +49,6 @@ namespace picocanvas {
         }
     }
 
-    template void Canvas::draw_bitmap(const Bitmap16 &, const picocanvas::Point &, const picocanvas::Rect &, int);
     template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, const picocanvas::Rect &, int);
     template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, const picocanvas::Rect &, int);
 
