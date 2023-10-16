@@ -9,7 +9,7 @@ picocanvas::Rect picocanvas::FixedWidthFont::measure_text(const std::string &tex
 void picocanvas::FixedWidthFont::write_text(picocanvas::Canvas &canvas,
                                             const std::string &text,
                                             const picocanvas::Point &position,
-                                            uint16_t color) const {
+                                            uint16_t color) {
     auto prev_state = canvas.state;
     canvas.state.color_mask = color;
 
@@ -22,7 +22,7 @@ void picocanvas::FixedWidthFont::write_text(picocanvas::Canvas &canvas,
 
 void picocanvas::FixedWidthFont::write_character(picocanvas::Canvas &canvas,
                                                  char character,
-                                                 const picocanvas::Point &position) const {
+                                                 const picocanvas::Point &position) {
     uint8_t index = character;
     Rect src = {0, index * character_height, character_width, character_height};
 

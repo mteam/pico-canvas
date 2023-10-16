@@ -17,13 +17,13 @@ namespace picocanvas {
 
         Rect measure_text(const std::string &text) const;
 
-        void write_text(Canvas &canvas, const std::string &text, const Point &position, uint16_t color) const;
+        void write_text(Canvas &canvas, const std::string &text, const Point &position, uint16_t color);
 
     private:
         const int16_t character_height;
         const int16_t character_width;
-        const Bitmap1 font_bitmap;
+        Bitmap1 font_bitmap;
 
-        void write_character(Canvas &canvas, char character, const Point &position) const;
+        void write_character(Canvas &canvas, char character, const Point &position);
     };
 }

@@ -12,20 +12,29 @@ namespace picocanvas {
         const uint16_t width;
         const uint16_t height;
 
+        unsigned int cursor = 0;
+
         Bitmap1(const uint8_t *data, uint16_t width, uint16_t height) : data(data), width(width), height(height) {}
 
         Rect rect() const {
             return Rect{0, 0, width, height};
         }
 
-        uint8_t sample_color(uint16_t x, uint16_t y) const {
-            uint16_t n = y * width + x;
+        void set_cursor(uint16_t x, uint16_t y) {
+            cursor = y * width + x;
+        }
 
+        uint8_t sample_color() const {
             // return n-th bit of data
-            uint8_t value = (data[n / 8] >> (7 - n % 8)) & 1;
+            uint8_t value = (data[cursor / 8] >> (7 - cursor % 8)) & 1;
 
             // return black or white
             return value ? 0xFF : 0x00;
+        }
+
+        uint8_t sample_color(uint16_t x, uint16_t y) {
+            set_cursor(x, y);
+            return sample_color();
         }
     };
 
@@ -67,6 +76,8 @@ namespace picocanvas {
         const void *pixels;
         const std::size_t length;
 
+        unsigned int cursor = 0;
+
         BitmapBMP(const uint8_t *data, std::size_t length) :
                 data(data),
                 bmp_header(reinterpret_cast<const BMPHeader *>(data)),
@@ -90,16 +101,24 @@ namespace picocanvas {
             return palette_vector;
         }
 
-        uint8_t sample_color(uint16_t x, uint16_t y) const {
+        void set_cursor(uint16_t x, uint16_t y) {
             // BMPs are stored upside down
             y = dib_header->height - y - 1;
+            cursor = y * dib_header->width + x;
+        }
 
+        uint8_t sample_color() const {
             if (dib_header->bits_per_pixel == 8) {
                 auto *pixels8 = reinterpret_cast<const uint8_t *>(pixels);
-                return pixels8[y * dib_header->width + x];
+                return pixels8[cursor];
             } else {
                 return 0;
             }
+        }
+
+        uint8_t sample_color(uint16_t x, uint16_t y) {
+            set_cursor(x, y);
+            return sample_color();
         }
     };
 }

@@ -26,16 +26,16 @@ namespace picocanvas {
     }
 
     template<class T>
-    void Canvas::draw_bitmap(const T &bitmap, const Point &dest, int scale) {
+    void Canvas::draw_bitmap(T &bitmap, const Point &dest, int scale) {
         Rect src = bitmap.rect();
         draw_bitmap(bitmap, dest, src, scale);
     }
 
-    template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, int);
-    template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, int);
+    template void Canvas::draw_bitmap(Bitmap1 &, const picocanvas::Point &, int);
+    template void Canvas::draw_bitmap(BitmapBMP &, const picocanvas::Point &, int);
 
     template<class T>
-    void Canvas::draw_bitmap(const T &bitmap, const Point &dest, const Rect &src, int scale) {
+    void Canvas::draw_bitmap(T &bitmap, const Point &dest, const Rect &src, int scale) {
         Rect bitmap_bounds = bitmap.rect();
 
         Point dest_clip = dest;
@@ -46,24 +46,32 @@ namespace picocanvas {
         int step = bounds.w - src_clip.w * scale; // number of pixels to skip to get to the next row
 
         for (int y = 0; y < src_clip.h; y++) {
-            for (int sy = 0; sy < scale; sy++) {
-                for (int x = 0; x < src_clip.w; x++) {
-                    uint8_t col = bitmap.sample_color(src_clip.x + x, src_clip.y + y);
+            bitmap.set_cursor(src_clip.x, src_clip.y + y);
+            auto row_cursor = bitmap.cursor;
 
-                    for (int sx = 0; sx < scale; sx++) {
-                        if (col != state.bitmap_transparency) {
-                            set_pixel_raw(index, col);
+            for (int sy = 0; sy < scale; sy++) {
+                bitmap.cursor = row_cursor;
+
+                for (int x = 0; x < src_clip.w; x++) {
+                    uint8_t col = bitmap.sample_color();
+
+                    if (col != state.bitmap_transparency) {
+                        for (int sx = 0; sx < scale; sx++) {
+                            set_pixel_raw(index++, col);
                         }
-                        index++;
+                    } else {
+                        index += scale; // skip transparent pixels
                     }
+
+                    bitmap.cursor++;
                 }
                 index += step;
             }
         }
     }
 
-    template void Canvas::draw_bitmap(const Bitmap1 &, const picocanvas::Point &, const picocanvas::Rect &, int);
-    template void Canvas::draw_bitmap(const BitmapBMP &, const picocanvas::Point &, const picocanvas::Rect &, int);
+    template void Canvas::draw_bitmap(Bitmap1 &, const picocanvas::Point &, const picocanvas::Rect &, int);
+    template void Canvas::draw_bitmap(BitmapBMP &, const picocanvas::Point &, const picocanvas::Rect &, int);
 
     void Canvas::clip_bitmap(Point &dest, Rect &src, int scale) {
         if (dest.x < 0) {
