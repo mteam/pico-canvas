@@ -1,7 +1,11 @@
 #include "picocanvas/text.hpp"
 
 picocanvas::Rect picocanvas::FixedWidthFont::measure_text(const std::string &text) const {
-    int16_t width = text.length() * character_width;
+    return measure_text(text.length());
+}
+
+picocanvas::Rect picocanvas::FixedWidthFont::measure_text(int length) const {
+    int16_t width = length * character_width;
     int16_t height = character_height;
     return {0, 0, width, height};
 }

@@ -16,6 +16,7 @@ namespace picocanvas {
                                                    character_height(character_height) {}
 
         Rect measure_text(const std::string &text) const;
+        Rect measure_text(int length) const;
 
         void write_text(Canvas &canvas, const std::string &text, const Point &position, uint16_t color);
 
