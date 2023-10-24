@@ -13,6 +13,7 @@ namespace picocanvas {
 
     class Canvas {
     public:
+        const Rect bounds;
         CanvasState state;
         uint8_t *frame_buffer;
 
@@ -53,8 +54,6 @@ namespace picocanvas {
         void draw_bitmap(T &bitmap, const Point &dest, const Rect &src, int scale = 1);
 
     protected:
-        Rect bounds;
-
         void clip_bitmap(Point &dest, Rect &src, int scale);
     };
 }
