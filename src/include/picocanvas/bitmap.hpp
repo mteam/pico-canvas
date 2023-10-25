@@ -86,6 +86,8 @@ namespace picocanvas {
                 pixels(data + bmp_header->data_offset),
                 length(length) {}
 
+        explicit BitmapBMP(std::vector<uint8_t> data) : BitmapBMP(data.data(), data.size()) {}
+
         Rect rect() const {
             return Rect{0, 0, static_cast<int32_t>(dib_header->width), static_cast<int32_t>(dib_header->height)};
         }
