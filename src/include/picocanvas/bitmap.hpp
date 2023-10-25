@@ -73,7 +73,7 @@ namespace picocanvas {
         const BMPHeader *bmp_header;
         const DIBHeader *dib_header;
         const BMPColor *palette;
-        const void *pixels;
+        const uint8_t *pixels;
         const std::size_t length;
 
         unsigned int cursor = 0;
@@ -106,13 +106,15 @@ namespace picocanvas {
         void set_cursor(uint16_t x, uint16_t y) {
             // BMPs are stored upside down
             y = dib_header->height - y - 1;
-            cursor = y * dib_header->width + x;
+
+            uint8_t bytes_per_pixel = dib_header->bits_per_pixel / 8;
+            uint32_t row_size = (dib_header->width * bytes_per_pixel + 3) & -4;
+            cursor = y * row_size + x;
         }
 
         uint8_t sample_color() const {
             if (dib_header->bits_per_pixel == 8) {
-                auto *pixels8 = reinterpret_cast<const uint8_t *>(pixels);
-                return pixels8[cursor];
+                return pixels[cursor];
             } else {
                 return 0;
             }
